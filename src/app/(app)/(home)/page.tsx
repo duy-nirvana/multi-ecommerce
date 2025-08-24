@@ -10,7 +10,5 @@ export default async function Home() {
     collection: "categories",
   });
 
-  console.log({ payload });
-  console.log({ data });
   return <div className="p-6">{JSON.stringify(data, null, 2)}</div>;
 }
