@@ -8,7 +8,15 @@ export default async function Home() {
 
   const data = await payload.find({
     collection: "categories",
+    depth: 1,
+    where: {
+      parent: {
+        exists: false,
+      },
+    },
   });
+
+  console.log({ data });
 
   return <div className="p-6">{JSON.stringify(data, null, 2)}</div>;
 }
