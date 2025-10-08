@@ -1,3 +1,4 @@
+import { Category } from "@/payload-types";
 import configPromise from "@payload-config";
 import { getPayload } from "payload";
 
@@ -27,17 +28,14 @@ const Layout = async ({ children }: Props) => {
   const formattedData = data.docs.map((doc) => ({
     ...doc,
     subcategories: (doc.subcategories?.docs ?? []).map((doc) => ({
-      ...doc,
+      ...(doc as Category),
     })),
   }));
-
-  console.log({ data });
-  console.log({ formattedData });
 
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <SearchFilters data={data} />
+      <SearchFilters data={formattedData} />
       <div className="flex flex-1 bg-[#F4F4F0]">{children}</div>
       <Footer />
     </div>
