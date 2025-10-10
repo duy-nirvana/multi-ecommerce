@@ -13,7 +13,6 @@ export const Categories: CollectionConfig = {
       type: "text",
       required: true,
       unique: true,
-      index: true,
     },
     {
       name: "color",
