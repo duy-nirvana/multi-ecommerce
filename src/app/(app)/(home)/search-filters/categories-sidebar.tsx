@@ -1,21 +1,22 @@
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { CustomCategory } from "../types";
-import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
+import { trpc } from "@/trpc/client";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  data: CustomCategory[]; // Remove this later
 }
 
-export const CategoriesSidebar = ({ open, onOpenChange, data }: Props) => {
+export const CategoriesSidebar = ({ open, onOpenChange }: Props) => {
   const router = useRouter();
+  const [data] = trpc.categories.getMany.useSuspenseQuery();
 
-  const [parentCategories, setParentCategories] = useState<CustomCategory[] | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<CustomCategory | null>(null);
+  const [parentCategories, setParentCategories] = useState<CategoriesGetManyOutput | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<CategoriesGetManyOutput[1] | null>(null);
 
   // if we have parent categories, show them, else show root categories
   const currentCategories = parentCategories ?? data ?? [];
@@ -26,9 +27,9 @@ export const CategoriesSidebar = ({ open, onOpenChange, data }: Props) => {
     onOpenChange(false);
   };
 
-  const handleCategoryClick = (category: CustomCategory) => {
+  const handleCategoryClick = (category: CategoriesGetManyOutput[1]) => {
     if (category.subcategories.length > 0) {
-      setParentCategories(category.subcategories as CustomCategory[]);
+      setParentCategories(category.subcategories as CategoriesGetManyOutput);
       setSelectedCategory(category);
     } else {
       // This is a leaf category, not subcategory
